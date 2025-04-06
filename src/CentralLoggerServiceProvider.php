@@ -2,6 +2,7 @@
 namespace ycanga\CentralLogger;
 
 use Illuminate\Support\ServiceProvider;
+use ycanga\CentralLogger\LoggerHandler;
 
 class CentralLoggerServiceProvider extends ServiceProvider
 {
