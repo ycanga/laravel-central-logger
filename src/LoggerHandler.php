@@ -23,11 +23,14 @@ class LoggerHandler extends AbstractProcessingHandler
     {
         if (!$this->endpoint || !$this->apiKey) return;
 
+        // Log seviyesini level'dan al
+        $levelName = Logger::getLevelName($record->level);
+
         Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->apiKey,
         ])->post($this->endpoint, [
             'message' => $record->message,
-            'level' => $record->levelName,
+            'level' => $levelName,  // Level is now retrieved using Logger::getLevelName
             'datetime' => $record->datetime->format('Y-m-d H:i:s'),
             'context' => $record->context,
         ]);
