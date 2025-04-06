@@ -1,0 +1,16 @@
+{
+    "name": "ycanga/central-logger",
+    "description": "Centralized logging package for Laravel",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Ycanga\\CentralLogger\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Yunus Emre CANGA"
+        }
+    ],
+    "require": {}
+}
