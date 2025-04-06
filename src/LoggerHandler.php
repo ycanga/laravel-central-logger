@@ -5,7 +5,9 @@ namespace ycanga\CentralLogger;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Monolog\LogRecord;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException as GuzzleExceptionAlias;
 
 class LoggerHandler extends AbstractProcessingHandler
 {
@@ -23,16 +25,31 @@ class LoggerHandler extends AbstractProcessingHandler
     {
         if (!$this->endpoint || !$this->apiKey) return;
 
-        // Log seviyesini level'dan al
         $levelName = Logger::getLevelName($record->level);
 
-        Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->apiKey,
-        ])->post($this->endpoint, [
+        $client = new Client();
+        $headers = [
+            'x-api-key' => $this->apiKey,
+            'Content-Type' => 'application/json',
+        ];
+
+        $data = [
+            'level' => $levelName,
             'message' => $record->message,
-            'level' => $levelName,  // Level is now retrieved using Logger::getLevelName
-            'datetime' => $record->datetime->format('Y-m-d H:i:s'),
             'context' => $record->context,
-        ]);
+            'datetime' => $record->datetime->format('Y-m-d H:i:s')
+        ];
+
+        try {
+            $client->post($this->endpoint, [
+                'headers' => $headers,
+                'json' => $data,
+            ]);
+
+            Log::stack(['single', 'daily'])->log($levelName, $record->message, $record->context);
+        } catch (GuzzleExceptionAlias $e) {
+            Log::stack(['single', 'daily'])->log('API request failed: ' . $e->getMessage(), $record->context);
+            return;
+        }
     }
 }
