@@ -2,9 +2,17 @@
     "name": "ycanga/central-logger",
     "description": "Centralized logging package for Laravel",
     "type": "library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Ycanga\\CentralLogger\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ycanga\\CentralLogger\\CentralLoggerServiceProvider"
+            ]
         }
     },
     "authors": [
@@ -12,5 +20,8 @@
             "name": "Yunus Emre CANGA"
         }
     ],
-    "require": {}
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^11.0|^10.0|^9.0"
+    }
 }
